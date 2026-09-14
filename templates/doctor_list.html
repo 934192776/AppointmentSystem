@@ -1,0 +1,27 @@
+<!-- templates/clinic/doctor_list.html -->
+{% extends 'base.html' %}
+
+{% block title %}医生列表{% endblock %}
+
+{% block content %}
+<h1>医生列表</h1>
+
+<div class="row mt-4">
+    {% for doctor in doctors %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5>Dr. {{ doctor.user.username }}</h5>
+                    <p>科室：{{ doctor.specialty }}</p>
+                    <p>电话：{{ doctor.phone }}</p>
+                    <a href="{% url 'doctor_detail' doctor.id %}" class="btn btn-primary">
+                        预约
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>暂无医生</p>
+    {% endfor %}
+</div>
+{% endblock %}

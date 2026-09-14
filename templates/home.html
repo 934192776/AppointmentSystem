@@ -1,0 +1,38 @@
+<!-- templates/clinic/home.html -->
+{% extends 'base.html' %}
+
+{% block title %}首页 - Piki Ora 医疗中心{% endblock %}
+
+{% block content %}
+<div class="jumbotron bg-light p-5 rounded">
+    <h1>欢迎来到 Piki Ora 医疗中心</h1>
+    <p class="lead">在线预约系统，方便快捷</p>
+    <hr>
+    {% if user.is_authenticated %}
+        <p>欢迎回来，{{ user.username }}！</p>
+        <a href="{% url 'doctor_list' %}" class="btn btn-primary">立即预约</a>
+    {% else %}
+        <p>请先登录或注册</p>
+        <a href="{% url 'login' %}" class="btn btn-primary">登录</a>
+        <a href="{% url 'register' %}" class="btn btn-success">注册</a>
+    {% endif %}
+</div>
+
+<h2 class="mt-4">我们的医生</h2>
+<div class="row">
+    {% for doctor in doctors %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Dr. {{ doctor.user.username }}</h5>
+                    <p class="card-text">科室：{{ doctor.specialty }}</p>
+                    <p class="card-text">电话：{{ doctor.phone }}</p>
+                    <a href="{% url 'doctor_detail' doctor.id %}" class="btn btn-primary">查看详情</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <p>暂无医生</p>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+<!-- templates/clinic/my_appointments.html -->
+{% extends 'base.html' %}
+
+{% block title %}我的预约{% endblock %}
+
+{% block content %}
+<h1>我的预约</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>医生</th>
+            <th>日期</th>
+            <th>时间</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for appointment in appointments %}
+            <tr>
+                <td>Dr. {{ appointment.slot.doctor.user.username }}</td>
+                <td>{{ appointment.slot.date }}</td>
+                <td>{{ appointment.slot.time }}</td>
+                <td>
+                    <span class="badge
+                        {% if appointment.status == 'pending' %}bg-warning
+                        {% elif appointment.status == 'confirmed' %}bg-success
+                        {% elif appointment.status == 'cancelled' %}bg-danger
+                        {% else %}bg-secondary{% endif %}">
+                        {{ appointment.get_status_display }}
+                    </span>
+                </td>
+                <td>
+                    {% if appointment.status != 'cancelled' %}
+                        <a href="{% url 'edit_appointment' appointment.id %}"
+                           class="btn btn-primary btn-sm">编辑</a>
+                        <a href="{% url 'cancel_appointment' appointment.id %}"
+                           class="btn btn-danger btn-sm">取消</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="5">暂无预约</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

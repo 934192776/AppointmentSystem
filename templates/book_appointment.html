@@ -1,0 +1,24 @@
+<!-- templates/clinic/book_appointment.html -->
+{% extends 'base.html' %}
+
+{% block title %}预约 - {{ slot.doctor.user.username }}{% endblock %}
+
+{% block content %}
+<h1>确认预约</h1>
+
+<div class="card">
+    <div class="card-body">
+        <h5>医生：Dr. {{ slot.doctor.user.username }}</h5>
+        <p>科室：{{ slot.doctor.specialty }}</p>
+        <p>日期：{{ slot.date }}</p>
+        <p>时间：{{ slot.time }}</p>
+    </div>
+</div>
+
+<form method="post" class="mt-4">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">确认预约</button>
+    <a href="{% url 'doctor_detail' slot.doctor.id %}" class="btn btn-secondary">取消</a>
+</form>
+{% endblock %}

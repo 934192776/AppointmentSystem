@@ -1,0 +1,53 @@
+<!-- templates/clinic/doctor_detail.html -->
+{% extends 'base.html' %}
+
+{% block title %}{{ doctor.user.username }} - 医生详情{% endblock %}
+
+{% block content %}
+<h1>Dr. {{ doctor.user.username }}</h1>
+<p>科室：{{ doctor.specialty }}</p>
+<p>电话：{{ doctor.phone }}</p>
+<p>简介：{{ doctor.bio }}</p>
+
+<h3 class="mt-4">可预约时间段</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>日期</th>
+            <th>时间</th>
+            <th>状态</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for slot in available_slots %}
+            <tr>
+                <td>{{ slot.date }}</td>
+                <td>{{ slot.time }}</td>
+                <td>
+                    {% if slot.is_available %}
+                        <span class="badge bg-success">可预约</span>
+                    {% else %}
+                        <span class="badge bg-danger">已预约</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if slot.is_available and user.is_authenticated %}
+                        <a href="{% url 'book_appointment' slot.id %}" class="btn btn-primary btn-sm">
+                            预约
+                        </a>
+                    {% elif not user.is_authenticated %}
+                        <a href="{% url 'login' %}" class="btn btn-warning btn-sm">
+                            请先登录
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="4">暂无可预约时间段</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
