@@ -54,7 +54,8 @@ urlpatterns = [
     path('admin-dashboard/patients/', views.manage_patients, name='manage_patients'),
     path('admin-dashboard/patients/<int:patient_id>/toggle/', views.toggle_patient, name='toggle_patient'),
 
-    # ===== API =====
+
+    #  API
     path('api/', include(router.urls)),
     path('api/doctors/<int:doctor_id>/available-slots/', api_views.available_slots, name='api_available_slots'),
 ]
