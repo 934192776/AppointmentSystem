@@ -226,7 +226,6 @@ def cancel_appointment(request, appointment_id):
     }
     return render(request, 'cancel_appointment.html', context)
 
-
 # 医生功能
 
 @login_required
@@ -305,7 +304,6 @@ def delete_slot(request, slot_id):
     }
     return render(request, 'delete_slot.html', context)
 
-
 # 用户认证
 
 def register(request):
@@ -375,7 +373,6 @@ def user_logout(request):
     logout(request)
     messages.success(request, '已成功登出')
     return redirect('home')
-
 
 # 管理员功能
 
