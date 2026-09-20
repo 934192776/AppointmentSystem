@@ -1,0 +1,30 @@
+
+{% extends 'base.html' %}
+
+{% block title %}启用/禁用患者 - 管理员{% endblock %}
+
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h1>确认操作</h1>
+
+        <div class="alert alert-warning">
+            <p>你确定要
+                {% if patient.is_active %}
+                    禁用
+                {% else %}
+                    启用
+                {% endif %}
+                患者 <strong>{{ patient.username }}</strong> 吗？
+            </p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-warning">确认</button>
+            <a href="{% url 'manage_patients' %}" class="btn btn-secondary">取消</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

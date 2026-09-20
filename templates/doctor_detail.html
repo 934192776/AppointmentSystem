@@ -1,53 +1,82 @@
-<!-- templates/clinic/doctor_detail.html -->
+
 {% extends 'base.html' %}
 
-{% block title %}{{ doctor.user.username }} - 医生详情{% endblock %}
+{% block title %}Dr. {{ doctor.user.username }} - 医生详情{% endblock %}
 
 {% block content %}
-<h1>Dr. {{ doctor.user.username }}</h1>
-<p>科室：{{ doctor.specialty }}</p>
-<p>电话：{{ doctor.phone }}</p>
-<p>简介：{{ doctor.bio }}</p>
+<!-- 医生信息卡片 -->
+<div class="card mb-4">
+    <div class="card-body">
+        <h1>Dr. {{ doctor.user.username }}</h1>
+        <p><strong>科室：</strong>{{ doctor.specialty }}</p>
+        <p><strong>电话：</strong>{{ doctor.phone }}</p>
+        <p><strong>简介：</strong>{{ doctor.bio|default:"暂无简介" }}</p>
+    </div>
+</div>
 
-<h3 class="mt-4">可预约时间段</h3>
-<table class="table">
-    <thead>
-        <tr>
-            <th>日期</th>
-            <th>时间</th>
-            <th>状态</th>
-            <th>操作</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for slot in available_slots %}
+<!-- 可预约时间段 -->
+<h3>可预约时间段</h3>
+
+{% if available_slots %}
+    <table class="table table-striped">
+        <thead>
             <tr>
-                <td>{{ slot.date }}</td>
-                <td>{{ slot.time }}</td>
-                <td>
-                    {% if slot.is_available %}
-                        <span class="badge bg-success">可预约</span>
-                    {% else %}
-                        <span class="badge bg-danger">已预约</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% if slot.is_available and user.is_authenticated %}
-                        <a href="{% url 'book_appointment' slot.id %}" class="btn btn-primary btn-sm">
-                            预约
-                        </a>
-                    {% elif not user.is_authenticated %}
-                        <a href="{% url 'login' %}" class="btn btn-warning btn-sm">
-                            请先登录
-                        </a>
-                    {% endif %}
-                </td>
+                <th>日期</th>
+                <th>时间</th>
+                <th>状态</th>
+                <th>操作</th>
             </tr>
-        {% empty %}
-            <tr>
-                <td colspan="4">暂无可预约时间段</td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            <!-- 循环遍历所有可预约时间段 -->
+            {% for slot in available_slots %}
+                <tr>
+                    <!-- 日期 -->
+                    <td>{{ slot.date }}</td>
+
+                    <!-- 时间 -->
+                    <td>{{ slot.start_time }}</td>
+
+                    <!-- 状态 -->
+                    <td>
+                        {% if slot.is_available %}
+                            <span class="badge bg-success">可预约</span>
+                        {% else %}
+                            <span class="badge bg-danger">已预约</span>
+                        {% endif %}
+                    </td>
+
+                    <!-- 操作按钮 -->
+                    <td>
+                        {% if slot.is_available %}
+                            {% if user.is_authenticated %}
+                                <!-- 已登录，显示预约按钮 -->
+                                <a href="{% url 'book_appointment' slot.id %}"
+                                   class="btn btn-primary btn-sm">
+                                    预约
+                                </a>
+                            {% else %}
+                                <!-- 未登录，提示先登录 -->
+                                <a href="{% url 'login' %}"
+                                   class="btn btn-warning btn-sm">
+                                    请先登录
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <!-- 已被预约 -->
+                            <button class="btn btn-secondary btn-sm" disabled>
+                                不可预约
+                            </button>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>暂无可预约时间段</p>
+{% endif %}
+
+<!-- 返回按钮 -->
+<a href="{% url 'doctor_list' %}" class="btn btn-secondary">返回医生列表</a>
 {% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}编辑预约 - Piki Ora{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h1>编辑预约</h1>
+
+        <!-- 预约信息卡片 -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>医生：Dr. {{ appointment.time_slot.doctor.user.username }}</h5>
+                <p><strong>患者：</strong>{{ appointment.patient.user.username }}</p>
+                <p><strong>日期：</strong>{{ appointment.time_slot.date }}</p>
+                <p><strong>时间：</strong>{{ appointment.time_slot.start_time }}</p>
+            </div>
+        </div>
+
+        <!-- 编辑表单 -->
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- 只有管理员能看到状态下拉框 -->
+            {% if user.is_superuser %}
+                <div class="mb-3">
+                    <label>状态</label>
+                    <select name="status" class="form-control">
+                        {% for value, label in status_choices %}
+                            <option value="{{ value }}"
+                                    {% if appointment.status == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            {% endif %}
+
+            <!-- 备注（所有人都能改） -->
+            <div class="mb-3">
+                <label>备注</label>
+                <textarea name="notes" class="form-control" rows="3">{{ appointment.notes }}</textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success">保存</button>
+
+            <!-- ✅ 根据角色返回不同的页面 -->
+            {% if user.is_superuser %}
+                <a href="{% url 'manage_appointments' %}" class="btn btn-secondary">取消</a>
+            {% else %}
+                <a href="{% url 'my_appointments' %}" class="btn btn-secondary">取消</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}

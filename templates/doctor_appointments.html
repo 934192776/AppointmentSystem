@@ -1,0 +1,41 @@
+
+{% extends 'base.html' %}
+
+{% block title %}我的预约 - 医生{% endblock %}
+
+{% block content %}
+<h1>患者预约列表</h1>
+
+{% if appointments %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>患者</th>
+                <th>日期</th>
+                <th>时间</th>
+                <th>状态</th>
+                <th>备注</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appointment in appointments %}
+                <tr>
+                    <td>{{ appointment.patient.user.username }}</td>
+                    <td>{{ appointment.time_slot.date }}</td>
+                    <td>{{ appointment.time_slot.start_time }}</td>
+                    <td>
+                        {% if appointment.status == 'Booked' %}
+                            <span class="badge bg-success">已预约</span>
+                        {% else %}
+                            <span class="badge bg-danger">已取消</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ appointment.notes|default:"无" }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>暂无预约</p>
+{% endif %}
+{% endblock %}

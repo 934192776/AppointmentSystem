@@ -1,24 +1,40 @@
-<!-- templates/clinic/book_appointment.html -->
+
 {% extends 'base.html' %}
 
-{% block title %}预约 - {{ slot.doctor.user.username }}{% endblock %}
+{% block title %}预约 - Dr. {{ slot.doctor.user.username }}{% endblock %}
 
 {% block content %}
-<h1>确认预约</h1>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h1>确认预约</h1>
 
-<div class="card">
-    <div class="card-body">
-        <h5>医生：Dr. {{ slot.doctor.user.username }}</h5>
-        <p>科室：{{ slot.doctor.specialty }}</p>
-        <p>日期：{{ slot.date }}</p>
-        <p>时间：{{ slot.time }}</p>
+        <!-- 预约信息卡片 -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>医生：Dr. {{ slot.doctor.user.username }}</h5>
+                <p><strong>科室：</strong>{{ slot.doctor.specialty }}</p>
+                <p><strong>日期：</strong>{{ slot.date }}</p>
+                <p><strong>时间：</strong>{{ slot.start_time }}</p>
+            </div>
+        </div>
+
+        <!-- 预约表 -->
+        <form method="post">
+            <!-- CSRF安全令牌 -->
+            {% csrf_token %}
+
+            <!-- 显示备注字段 -->
+            {{ form.as_p }}
+
+            <!-- 确认预约按钮 -->
+            <button type="submit" class="btn btn-success">确认预约</button>
+
+            <!-- 取消按钮 -->
+            <a href="{% url 'doctor_detail' slot.doctor.id %}"
+               class="btn btn-secondary">
+                取消
+            </a>
+        </form>
     </div>
 </div>
-
-<form method="post" class="mt-4">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">确认预约</button>
-    <a href="{% url 'doctor_detail' slot.doctor.id %}" class="btn btn-secondary">取消</a>
-</form>
 {% endblock %}

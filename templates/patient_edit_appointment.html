@@ -1,0 +1,36 @@
+
+{% extends 'base.html' %}
+
+{% block title %}编辑预约 - Piki Ora{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h1>编辑预约</h1>
+
+        <!-- 预约信息卡片 -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>医生：Dr. {{ appointment.time_slot.doctor.user.username }}</h5>
+                <p><strong>科室：</strong>{{ appointment.time_slot.doctor.specialty }}</p>
+                <p><strong>日期：</strong>{{ appointment.time_slot.date }}</p>
+                <p><strong>时间：</strong>{{ appointment.time_slot.start_time }}</p>
+                <p><strong>状态：</strong>{{ appointment.get_status_display }}</p>
+            </div>
+        </div>
+
+        <!-- 编辑表单（患者只能改备注） -->
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label>备注</label>
+                <textarea name="notes" class="form-control" rows="3">{{ appointment.notes }}</textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success">保存</button>
+            <a href="{% url 'my_appointments' %}" class="btn btn-secondary">取消</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,27 +1,44 @@
-<!-- templates/clinic/doctor_list.html -->
+
 {% extends 'base.html' %}
 
-{% block title %}医生列表{% endblock %}
+{% block title %}医生列表 - Piki Ora{% endblock %}
 
 {% block content %}
 <h1>医生列表</h1>
 
 <div class="row mt-4">
+    <!-- 循环遍历所有医生 -->
     {% for doctor in doctors %}
         <div class="col-md-4 mb-4">
             <div class="card">
                 <div class="card-body">
-                    <h5>Dr. {{ doctor.user.username }}</h5>
-                    <p>科室：{{ doctor.specialty }}</p>
-                    <p>电话：{{ doctor.phone }}</p>
-                    <a href="{% url 'doctor_detail' doctor.id %}" class="btn btn-primary">
-                        预约
+                    <!-- 医生名字（用user.username） -->
+                    <h5 class="card-title">Dr. {{ doctor.user.username }}</h5>
+
+                    <!-- 科室 -->
+                    <p class="card-text">
+                        <strong>科室：</strong>{{ doctor.specialty }}
+                    </p>
+
+                    <!-- 电话 -->
+                    <p class="card-text">
+                        <strong>电话：</strong>{{ doctor.phone }}
+                    </p>
+
+                    <!-- 查看详情按钮 -->
+                    <a href="{% url 'doctor_detail' doctor.id %}"
+                       class="btn btn-primary">
+                        查看可预约时间
                     </a>
                 </div>
             </div>
         </div>
+
+    <!-- 如果没有任何医生 -->
     {% empty %}
-        <p>暂无医生</p>
+        <div class="col-12">
+            <p>暂无医生</p>
+        </div>
     {% endfor %}
 </div>
 {% endblock %}

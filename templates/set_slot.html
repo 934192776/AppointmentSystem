@@ -1,0 +1,69 @@
+
+{% extends 'base.html' %}
+
+{% block title %}设置时间段 - Piki Ora{% endblock %}
+
+{% block content %}
+<h1>设置可预约时间段</h1>
+
+<!-- 创建时间段表 -->
+<div class="card mb-4">
+    <div class="card-body">
+        <h4>创建新时间段</h4>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success">创建时间段</button>
+        </form>
+    </div>
+</div>
+
+<!-- 已有时间段列表 -->
+<h3>我的时间段</h3>
+
+{% if slots %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>日期</th>
+                <th>时间</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for slot in slots %}
+                <tr>
+                    <td>{{ slot.date }}</td>
+                    <td>{{ slot.start_time }}</td>
+                    <td>
+                        {% if slot.is_available %}
+                            <span class="badge bg-success">可预约</span>
+                        {% else %}
+                            <span class="badge bg-danger">已被预约</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if slot.is_available %}
+                            <form action="{% url 'delete_slot' slot.id %}"
+                                  method="post"
+                                  style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="return confirm('确定要删除这个时间段吗？')">
+                                    删除
+                                </button>
+                            </form>
+                        {% else %}
+                            <span class="text-muted">已被预约</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>还没有创建时间段</p>
+{% endif %}
+{% endblock %}

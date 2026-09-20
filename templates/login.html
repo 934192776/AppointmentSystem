@@ -1,0 +1,36 @@
+
+{% extends 'base.html' %}
+
+{% block title %}登录 - Piki Ora 医疗中心{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <h2>登录</h2>
+
+        <!-- 登录表单 -->
+        <form method="post">
+            <!-- CSRF安全令牌，必须写 -->
+            {% csrf_token %}
+
+            <!-- 用户名输入框 -->
+            <div class="mb-3">
+                <label>用户名</label>
+                <input type="text" name="username" class="form-control" required>
+            </div>
+
+            <!-- 密码输入框 -->
+            <div class="mb-3">
+                <label>密码</label>
+                <input type="password" name="password" class="form-control" required>
+            </div>
+
+            <!-- 登录按钮 -->
+            <button type="submit" class="btn btn-primary">登录</button>
+
+            <!-- 注册链接 -->
+            <a href="{% url 'register' %}" class="btn btn-secondary">没有账号？注册</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

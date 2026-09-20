@@ -1,0 +1,105 @@
+
+{% extends 'base.html' %}
+
+{% block title %}管理员仪表盘 - Piki Ora{% endblock %}
+
+{% block content %}
+<h1>管理员仪表盘</h1>
+
+<!-- 统计卡片 -->
+<div class="row mt-4">
+    <!-- 医生总数 -->
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">医生总数</h5>
+                <p class="card-text display-4">{{ total_doctors }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 患者总数 -->
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title">患者总数</h5>
+                <p class="card-text display-4">{{ total_patients }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 预约总数 -->
+    <div class="col-md-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-body">
+                <h5 class="card-title">预约总数</h5>
+                <p class="card-text display-4">{{ total_appointments }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 待处理预约 -->
+    <div class="col-md-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+                <h5 class="card-title">待处理预约</h5>
+                <p class="card-text display-4">{{ pending_appointments }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 快捷操作 -->
+<h3>快捷操作</h3>
+<div class="row">
+    <div class="col-md-3 mb-2">
+        <a href="{% url 'manage_doctors' %}" class="btn btn-primary w-100">
+            管理医生
+        </a>
+    </div>
+    <div class="col-md-3 mb-2">
+        <a href="{% url 'manage_slots' %}" class="btn btn-primary w-100">
+            管理时间段
+        </a>
+    </div>
+    <div class="col-md-3 mb-2">
+        <a href="{% url 'manage_appointments' %}" class="btn btn-primary w-100">
+            管理预约
+        </a>
+    </div>
+    <div class="col-md-3 mb-2">
+        <a href="{% url 'manage_patients' %}" class="btn btn-primary w-100">
+            管理患者
+        </a>
+    </div>
+</div>
+
+<!-- 最近预约 -->
+<h3 class="mt-4">最近预约</h3>
+{% if recent_appointments %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>患者</th>
+                <th>医生</th>
+                <th>日期</th>
+                <th>时间</th>
+                <th>状态</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appointment in recent_appointments %}
+                <tr>
+                    <td>{{ appointment.patient.user.username }}</td>
+                    <td>Dr. {{ appointment.time_slot.doctor.user.username }}</td>
+                    <td>{{ appointment.time_slot.date }}</td>
+                    <td>{{ appointment.time_slot.start_time }}</td>
+                    <td>{{ appointment.get_status_display }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>暂无预约</p>
+{% endif %}
+{% endblock %}
