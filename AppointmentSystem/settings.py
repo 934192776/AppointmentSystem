@@ -1,19 +1,36 @@
-
 from dotenv import load_dotenv
 import os
 from pathlib import Path
+import dj_database_url
 
 # 加载 .env 文件
 load_dotenv()
 
-# 读取环境变量
-SECRET_KEY = os.environ.get('SECRET_KEY', 'default-key')
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+# 基础路径
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'your-secret-key-here'
-DEBUG = True
+# 安全配置
+
+# 从环境变量读取 SECRET_KEY（Render 上会设置）
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-insecure-default-key-for-local-dev'
+)
+
+# 从环境变量读取 DEBUG
+# Render 上不设置 DEBUG，所以是 False
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+
+# ALLOWED_HOSTS
 ALLOWED_HOSTS = ['*']
+
+# Render 的域名自动加入
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+
+# 应用配置
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -22,9 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',        # API
-    'rest_framework.authtoken',  # Token认证
-    'blog'
+    'rest_framework',
+    'rest_framework.authtoken',
+    'blog',
 ]
 
 MIDDLEWARE = [
@@ -57,12 +74,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'AppointmentSystem.wsgi.application'
 
+
+# 数据库配置
+# 本地：用 SQLite
+# Render：用 PostgreSQL（通过 DATABASE_URL 环境变量）
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default='sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3'),
+        conn_max_age=600
+    )
 }
+
+
+# 密码验证
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -71,21 +96,34 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+
+# 国际化
+
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+
+# 静态文件
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# 登录/登出跳转
+# Whitenoise 静态文件压缩
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+# 登录/登出
+
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-# REST Framework配置
+
+# REST Framework
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
@@ -96,5 +134,7 @@ REST_FRAMEWORK = {
     ],
 }
 
+
+# 默认主键
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
