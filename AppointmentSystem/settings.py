@@ -1,8 +1,14 @@
-# AppointmentSystem/settings.py
 
+from dotenv import load_dotenv
 import os
 from pathlib import Path
 
+# 加载 .env 文件
+load_dotenv()
+
+# 读取环境变量
+SECRET_KEY = os.environ.get('SECRET_KEY', 'default-key')
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'your-secret-key-here'
